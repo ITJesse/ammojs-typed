@@ -44,7 +44,6 @@ interface btVector4 {
   void btVector4();
   void btVector4(float x, float y, float z, float w);
   float w();
-  void setValue(float x, float y, float z);
   void setValue(float x, float y, float z, float w);
 };
 btVector4 implements btVector3;
@@ -164,6 +163,7 @@ interface RayResultCallback {
   attribute short m_collisionFilterMask;
   attribute float m_closestHitFraction;
   [Const] attribute btCollisionObject m_collisionObject;
+  attribute unsigned long m_flags;
 };
 
 [Prefix="btCollisionWorld::"]
@@ -254,7 +254,7 @@ interface ConvexResultCallback {
 [Prefix="btCollisionWorld::"]
 interface ClosestConvexResultCallback {
   void ClosestConvexResultCallback([Const, Ref] btVector3 convexFromWorld, [Const, Ref] btVector3 convexToWorld);
-
+  [Const] attribute btCollisionObject m_hitCollisionObject;
   [Value] attribute btVector3 m_convexFromWorld;
   [Value] attribute btVector3 m_convexToWorld;
   [Value] attribute btVector3 m_hitNormalWorld;
@@ -521,7 +521,7 @@ interface btBroadphaseInterface {
 interface btCollisionConfiguration {
 };
 
-interface btDbvtBroadphase: btBroadphaseInterface {
+interface btDbvtBroadphase {
   void btDbvtBroadphase();
 };
 
@@ -738,13 +738,11 @@ interface btContactSolverInfo {
   attribute long m_numIterations;
 };
 
-callback btInternalTickCallback = void (btDynamicsWorld world, float timeStep);
-
 interface btDynamicsWorld {
   void addAction(btActionInterface action);
   void removeAction(btActionInterface action);
   [Ref] btContactSolverInfo getSolverInfo();
-  void setInternalTickCallback(btInternalTickCallback cb, optional VoidPtr worldUserInfo, optional boolean isPreTick);
+  void setInternalTickCallback(VoidPtr cb, optional VoidPtr worldUserInfo, optional boolean isPreTick);
 };
 btDynamicsWorld implements btCollisionWorld;
 
@@ -1071,6 +1069,8 @@ interface btSoftBody {
   long generateClusters(long k, optional long maxiterations);
   long generateBendingConstraints(long distance, Material mat);
   btSoftBody upcast(btCollisionObject colObj);
+  float getRestLengthScale();
+  void setRestLengthScale(float restLength);
 };
 btSoftBody implements btCollisionObject;
 

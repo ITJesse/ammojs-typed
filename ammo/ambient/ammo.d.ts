@@ -40,7 +40,6 @@ declare module Ammo {
         constructor();
         constructor(x: number, y: number, z: number, w: number);
         w(): number;
-        setValue(x: number, y: number, z: number): void;
         setValue(x: number, y: number, z: number, w: number): void;
     }
     class btQuadWord {
@@ -147,6 +146,8 @@ declare module Ammo {
         set_m_closestHitFraction(m_closestHitFraction: number): void;
         get_m_collisionObject(): btCollisionObject;
         set_m_collisionObject(m_collisionObject: btCollisionObject): void;
+        get_m_flags(): number;
+        set_m_flags(m_flags: number): void;
     }
     class ClosestRayResultCallback extends RayResultCallback {
         constructor(from: btVector3, to: btVector3);
@@ -237,6 +238,8 @@ declare module Ammo {
     }
     class ClosestConvexResultCallback extends ConvexResultCallback {
         constructor(convexFromWorld: btVector3, convexToWorld: btVector3);
+        get_m_hitCollisionObject(): btCollisionObject;
+        set_m_hitCollisionObject(m_hitCollisionObject: btCollisionObject): void;
         get_m_convexFromWorld(): btVector3;
         set_m_convexFromWorld(m_convexFromWorld: btVector3): void;
         get_m_convexToWorld(): btVector3;
@@ -442,7 +445,7 @@ declare module Ammo {
     }
     class btCollisionConfiguration {
     }
-    class btDbvtBroadphase extends btBroadphaseInterface {
+    class btDbvtBroadphase {
         constructor();
     }
     class btBroadphaseProxy {
@@ -653,12 +656,11 @@ declare module Ammo {
         get_m_numIterations(): number;
         set_m_numIterations(m_numIterations: number): void;
     }
-    type btInternalTickCallback = (world: btDynamicsWorld, timeStep: number) => void;
     class btDynamicsWorld extends btCollisionWorld {
         addAction(action: btActionInterface): void;
         removeAction(action: btActionInterface): void;
         getSolverInfo(): btContactSolverInfo;
-        setInternalTickCallback(cb: btInternalTickCallback, worldUserInfo?: unknown, isPreTick?: boolean): void;
+        setInternalTickCallback(cb: unknown, worldUserInfo?: unknown, isPreTick?: boolean): void;
     }
     class btDiscreteDynamicsWorld extends btDynamicsWorld {
         constructor(dispatcher: btDispatcher, pairCache: btBroadphaseInterface, constraintSolver: btConstraintSolver, collisionConfiguration: btCollisionConfiguration);
@@ -1040,6 +1042,8 @@ declare module Ammo {
         generateClusters(k: number, maxiterations?: number): number;
         generateBendingConstraints(distance: number, mat: Material): number;
         upcast(colObj: btCollisionObject): btSoftBody;
+        getRestLengthScale(): number;
+        setRestLengthScale(restLength: number): void;
     }
     class btSoftBodyRigidBodyCollisionConfiguration extends btDefaultCollisionConfiguration {
         constructor(info?: btDefaultCollisionConstructionInfo);
